@@ -22,7 +22,7 @@ function start() {
                 'remove a department',
                 'remove a role',
                 'remove an employee',
-                'update employee rolls',
+                'update employee roles',
                 'exit'
             ]
         }])
@@ -69,7 +69,33 @@ function start() {
                     updateRole;
                     break;
 
+                case 'exit':
+                    Connection.end();
+                    break;
             }
+        });
+};
 
-        })
+function viewDepartments(){
+    db.query('SELECT*FROM departments', function(err, res){
+        if (err) throw err;
+        console.log(res)
+        start()
+    }) 
+}
+
+function viewRoles(){
+    db.query('SELECT*FROM roles', function(err, res){
+        if (err) throw err;
+        console.log(res)
+        start()
+    }) 
+}
+
+function viewEmployees(){
+    db.query('SELECT*FROM employees', function(err, res){
+        if (err) throw err;
+        console.log(res)
+        start()
+    }) 
 }
