@@ -45,3 +45,7 @@ VALUES
 ('accontant', 125000, 3)
 ('legal team lead', 200000, 4)
 ('lawyer', 175000, 4)
+
+INSERT INTO employees
+    (firstName, lastName, roleId, managerID)
+    VALUES
