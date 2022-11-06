@@ -76,40 +76,40 @@ function start() {
         });
 };
 
-function viewDepartments(){
-    db.query('SELECT*FROM departments', function(err, res){
+function viewDepartments() {
+    db.query('SELECT*FROM departments', function (err, res) {
         if (err) throw err;
         console.log(res)
         start()
-    }) 
+    })
 }
 
-function viewRoles(){
-    db.query('SELECT*FROM roles', function(err, res){
+function viewRoles() {
+    db.query('SELECT*FROM roles', function (err, res) {
         if (err) throw err;
         console.log(res)
         start()
-    }) 
+    })
 }
 
-function viewEmployees(){
-    db.query('SELECT*FROM employees', function(err, res){
+function viewEmployees() {
+    db.query('SELECT*FROM employees', function (err, res) {
         if (err) throw err;
         console.log(res)
         start()
-    }) 
+    })
 }
 
-function addDepartment(){
+function addDepartment() {
     inquirer.Prompt([
         {
             name: 'addDepartment',
             message: 'What is the name of the department you would like to add??'
         }
-    ]).then (function(answer){
+    ]).then(function (answer) {
         db.query('INSERT INTO departments SET', {
             name: answer.addDepartment
-        }, function(err, res){
+        }, function (err, res) {
             if (err) throw err;
             console.table(res)
             start()
@@ -118,28 +118,77 @@ function addDepartment(){
 }
 
 const createNewRole = () => {
-    db.query ('SELECT* FROM departments', (err, addDepartment)=>{
-    if (err) { console.log(err) } 
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'title',
-            message: 'Name of the role you would like to add:'
-        },
-        {
-            type: 'number',
-            name: 'salary',
-            message: 'Salary for role:'
-        },
-        {
-            type: 'list',
-            name: 'departmentId',
-            message: 'Department ID:',
-            choices: viewDepartments.maps(addDepartment=>({
-                name: `${departments.name}`,
-                value: department.id
-            }))
-        }
-    ])
-})
+    db.query('SELECT* FROM departments', (err, addDepartment) => {
+        if (err) { console.log(err) }
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'title',
+                message: 'Name of the role you would like to add:'
+            },
+            {
+                type: 'number',
+                name: 'salary',
+                message: 'Salary for role:'
+            },
+            {
+                type: 'list',
+                name: 'departmentId',
+                message: 'Department ID:',
+                choices: viewDepartments.maps(addDepartment => ({
+                    name: `${departments.name}`,
+                    value: department.id
+                }))
+            }
+        ]).then(function (answers) {
+            db.query('INSERT INTO roles SET',
+                {
+                    title: answers.title,
+                    salary: answers.salary,
+                    departmentId: answers.departmentId
+                }, function (err, res) {
+                    if (err) throw err;
+                    console.table(res)
+                    start()
+                })
+        })
+    })
+}
+
+const addEmployee = () => {
+    db.query('SELECT* FROM viewRoles', (err, viewRoles) => {
+        if (err) { console.log(err) }
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'First Name:'
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'Last Name:'
+            },
+            {
+                type: 'list',
+                name: 'roleId',
+                message: roles.map(role => ({
+                    name: `${role.title}`,
+                    value: role.id
+                }))
+            }
+        ]).then(function (answers) {
+            db.query('INSERT INTO employees SET', {
+                firstName: answers.firstName,
+                lastName: answers.lastName,
+                roleId: answers.roleId,
+                managerId: null
+            }, function (err, res) {
+                if(err) throw err;
+                console.table(res)
+                start()
+            })
+            
+        })
+    })
 }
