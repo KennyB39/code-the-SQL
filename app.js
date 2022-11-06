@@ -99,3 +99,47 @@ function viewEmployees(){
         start()
     }) 
 }
+
+function addDepartment(){
+    inquirer.Prompt([
+        {
+            name: 'addDepartment',
+            message: 'What is the name of the department you would like to add??'
+        }
+    ]).then (function(answer){
+        db.query('INSERT INTO departments SET', {
+            name: answer.addDepartment
+        }, function(err, res){
+            if (err) throw err;
+            console.table(res)
+            start()
+        })
+    })
+}
+
+const createNewRole = () => {
+    db.query ('SELECT* FROM departments', (err, addDepartment)=>{
+    if (err) { console.log(err) } 
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'Name of the role you would like to add:'
+        },
+        {
+            type: 'number',
+            name: 'salary',
+            message: 'Salary for role:'
+        },
+        {
+            type: 'list',
+            name: 'departmentId',
+            message: 'Department ID:',
+            choices: viewDepartments.maps(addDepartment=>({
+                name: `${departments.name}`,
+                value: department.id
+            }))
+        }
+    ])
+})
+}
