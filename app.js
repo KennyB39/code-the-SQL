@@ -2,13 +2,13 @@ const mysql2 = require('mysql2')
 const inquirer = require('inquirer')
 require('console.table')
 
-const db = require('../db/Connection.js')
+const db = require('./db/connections')
 const Connection = require('../code-the-SQL/db/connections')
-const { captureRejectionSymbol } = require('mysql2/typings/mysql/lib/Connection.js')
 
-start()
+
+
 function start() {
-    inquirer.Prompt([
+    inquirer.prompt([
         {
             name: 'action',
             type: 'list',
@@ -137,7 +137,7 @@ const createNewRole = () => {
                 name: 'departmentId',
                 message: 'Department ID:',
                 choices: viewDepartments.maps(addDepartment => ({
-                    name: `${departments.name}`,
+                    name: `${addDepartment.name}`,
                     value: department.id
                 }))
             }
@@ -173,7 +173,8 @@ const addEmployee = () => {
             {
                 type: 'list',
                 name: 'roleId',
-                message: roles.map(role => ({
+                message: 'Role id:',
+                choices: roles.map(role => ({
                     name: `${role.title}`,
                     value: role.id
                 }))
@@ -193,27 +194,30 @@ const addEmployee = () => {
         })
     })
 }
-db.query('SELECTOR*FROM departments', (err, departments) => {
-    if (err) { console.log(err) }
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'removeDepartment',
-            message: 'Select which department you want to remove',
-            choice: department.map(departments => ({
-                name: `${departments.Name}`,
-                value: departments.id
-            }))
-        }
-    ]).then(function (answer) {
-        db.query(`DELETE FROM departments WHERE id = ${answer.removeDepartment}`,
-            function (err, res) {
-                if (err) throw err
-                console.log('Department Removed')
-                start()
-            })
+const removeDepartment = () => {
+    db.query('SELECT * FROM departments', (err, departments) => {
+        if (err) { console.log(err) }
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'removeDepartment',
+                message: 'Select which department you want to remove',
+                choices: departments.map(departments => ({
+                    name: `${departments.Name}`,
+                    value: departments.id
+                }))
+            }
+        ]).then(function (answer) {
+            db.query(`DELETE FROM departments WHERE id = ${answer.removeDepartment}`,
+                function (err, res) {
+                    if (err) throw err
+                    console.log('Department Removed')
+                    start()
+                })
+        })
     })
-})
+}
+
 
 function removeRole() {
     db.query('SELECT * FROM roles', (err, res) => {
@@ -253,7 +257,7 @@ function removeEmployee() {
                 }))
             }
         ]).then(function (answer) {
-            db.query(`DELETE FROM employees WHERE id => ${answer.removeEmployee}`,
+            db.query(`DELETE * FROM employees WHERE id = ${answer.removeEmployee}`,
                 function (err, res) {
                     if (err) throw err
                     console.log('Employee removed')
@@ -262,7 +266,7 @@ function removeEmployee() {
         })
     })
 }
-updateRole() {
+function updateRole() {
     db.query('SELECT * FROM employees', (err, employee) => {
         if (err) { console.log(err) }
         inquirer.prompt([
@@ -293,3 +297,4 @@ updateRole() {
         })
     })
 }
+start()
