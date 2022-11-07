@@ -1,6 +1,6 @@
 const mysql2 = require('mysql2')
 const inquirer = require('inquirer')
-require('console.table')
+require("console.table");
 
 const db = require('./db/connections')
 const Connection = require('../code-the-SQL/db/connections')
@@ -35,39 +35,39 @@ function start() {
                     break;
 
                 case 'view all roles':
-                    viewRoles;
+                    viewRoles();
                     break;
 
-                case 'view all emplooyees':
-                    viewEmployees;
+                case 'view all employees':
+                    viewEmployees();
                     break;
 
                 case 'add new department':
-                    addDepartment;
+                    addDepartment();
                     break;
 
                 case 'add new role':
-                    createNewRole;
+                    createNewRole();
                     break;
 
                 case 'add a new employee':
-                    addEmployee;
+                    addEmployee();
                     break;
 
                 case 'remove a department':
-                    removeDepartment;
+                    removeDepartment();
                     break;
 
                 case 'remove a role':
-                    removeRole;
+                    removeRole();
                     break;
 
                 case 'remove an employee':
-                    removeEmployee;
+                    removeEmployee();
                     break;
 
                 case 'update employee roles':
-                    updateRole;
+                    updateRole();
                     break;
 
                 case 'exit':
@@ -80,29 +80,29 @@ function start() {
 function viewDepartments() {
     db.query('SELECT*FROM departments', function (err, res) {
         if (err) throw err;
-        console.log(res)
+        console.table(res)
         start()
     })
 }
 
 function viewRoles() {
-    db.query('SELECT*FROM roles', function (err, res) {
+    db.query('SELECT roles.id, roles.title FROM roles;', function (err, res) {
         if (err) throw err;
-        console.log(res)
+        console.table(res)
         start()
     })
 }
 
 function viewEmployees() {
-    db.query('SELECT*FROM employees', function (err, res) {
+    db.query('SELECT employees.firstName, employees.lastName FROM employees;', function (err, res) {
         if (err) throw err;
-        console.log(res)
+        console.table(res)
         start()
     })
 }
 
 function addDepartment() {
-    inquirer.Prompt([
+    inquirer.prompt([
         {
             name: 'addDepartment',
             message: 'What is the name of the department you would like to add??'
@@ -111,7 +111,7 @@ function addDepartment() {
         db.query('INSERT INTO departments SET', {
             name: answer.addDepartment
         }, function (err, res) {
-            if (err) throw err;
+            if (err)throw err;
             console.table(res)
             start()
         })
@@ -119,12 +119,12 @@ function addDepartment() {
 }
 
 const createNewRole = () => {
-    db.query('SELECT* FROM departments', (err, addDepartment) => {
+    db.query('SELECT * FROM departments', (err, addDepartment) => {
         if (err) { console.log(err) }
         inquirer.prompt([
             {
                 type: 'input',
-                name: 'title',
+                name: 'addDepartment',
                 message: 'Name of the role you would like to add:'
             },
             {
