@@ -8,7 +8,7 @@ CREATE TABLE departments(
 
 CREATE TABLE roles(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL
-    title varchar(30) UNIQUE NOT NULL,
+    title varchar(30) NOT NULL,
     salary DECIMAL UNSIGNED NOT NULL,
     departmentId INT UNSIGNED NOT NULL,
     FOREIGN KEY ( departmentId) REFERENCES departments

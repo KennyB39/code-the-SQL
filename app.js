@@ -185,16 +185,16 @@ const addEmployee = () => {
                 roleId: answers.roleId,
                 managerId: null
             }, function (err, res) {
-                if(err) throw err;
+                if (err) throw err;
                 console.table(res)
                 start()
             })
-            
+
         })
     })
 }
 db.query('SELECTOR*FROM departments', (err, departments) => {
-    if(err) { console.log(err)}
+    if (err) { console.log(err) }
     inquirer.prompt([
         {
             type: 'list',
@@ -203,25 +203,25 @@ db.query('SELECTOR*FROM departments', (err, departments) => {
             choice: department.map(departments => ({
                 name: `${departments.Name}`,
                 value: departments.id
-            })) 
+            }))
         }
-    ]).then(function(answer){
+    ]).then(function (answer) {
         db.query(`DELETE FROM departments WHERE id = ${answer.removeDepartment}`,
-        function(err, res){
-            if (err) throw err
-            console.log('Department Removed')
-            start()
-        })
+            function (err, res) {
+                if (err) throw err
+                console.log('Department Removed')
+                start()
+            })
     })
 })
 
-function removeRole(){
-    db.query('SELECT * FROM roles', (err, res) =>{
-        if (err) { console.log(err)}
+function removeRole() {
+    db.query('SELECT * FROM roles', (err, res) => {
+        if (err) { console.log(err) }
 
         inquirer.prompt([
             {
-                type: 'list', 
+                type: 'list',
                 name: 'removeRole',
                 message: 'Select which role you would like to remove:',
                 choices: roles.map(role => ({
@@ -229,19 +229,19 @@ function removeRole(){
                     value: role.id
                 }))
             }
-        ]).then(function(answer){
-            db.query(`DELETE / FROM roles WHERE id = ${answer.removeRole}`, 
-            function (err, res) {
-                if(err) throw err 
-                console.log('Role removed.')
-                start()
-            })
+        ]).then(function (answer) {
+            db.query(`DELETE / FROM roles WHERE id = ${answer.removeRole}`,
+                function (err, res) {
+                    if (err) throw err
+                    console.log('Role removed.')
+                    start()
+                })
         })
     })
 }
-function removeEmployee(){
+function removeEmployee() {
     db.query('SELECT * FROM employee employeess', (err, employee) => {
-        if(err) { conmsole.lopg(err) }
+        if (err) { conmsole.lopg(err) }
         inquirer.prompt([
             {
                 type: 'list',
@@ -252,19 +252,19 @@ function removeEmployee(){
                     value: employee.id
                 }))
             }
-        ]).then(function(answer){
-            db.query(`DELETE FROM employees WHERE id = ${answer.removeEmployee}`, 
-            function (err, res){
-                if (err) throw err
-                console.log('Employee removed')
-                start()
-            })
+        ]).then(function (answer) {
+            db.query(`DELETE FROM employees WHERE id => ${answer.removeEmployee}`,
+                function (err, res) {
+                    if (err) throw err
+                    console.log('Employee removed')
+                    start()
+                })
         })
     })
 }
-updateRole(){
-     db.query('SELECT * FROM employees', (err, employee) => {
-        if (err) {console.log(err)}
+updateRole() {
+    db.query('SELECT * FROM employees', (err, employee) => {
+        if (err) { console.log(err) }
         inquirer.prompt([
             {
                 type: 'list',
@@ -276,14 +276,20 @@ updateRole(){
                 }))
             },
             {
-              type: 'list',
-              name: 'updateRole',
-              message: 'New role ID:',
-              choices: roles.map(role => ({
-                name:`${role.title}`,
-                value: role.id
-              }))
+                type: 'list',
+                name: 'updateRole',
+                message: 'New role ID:',
+                choices: roles.map(role => ({
+                    name: `${role.title}`,
+                    value: role.id
+                }))
             }
-        ]).then 
-     })
+        ]).then(function (answers) {
+            db.query('UPDATE employees SET ? WHERE ?', [{ roleId: answers.updateRole }, { id: answers.selectEmployee }], function (err, res) {
+                if (err) throw err
+                console.log('Employee role updated')
+                start()
+            })
+        })
+    })
 }
