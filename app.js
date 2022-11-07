@@ -4,6 +4,7 @@ require('console.table')
 
 const db = require('../db/Connection.js')
 const Connection = require('../code-the-SQL/db/connections')
+const { captureRejectionSymbol } = require('mysql2/typings/mysql/lib/Connection.js')
 
 start()
 function start() {
@@ -189,6 +190,52 @@ const addEmployee = () => {
                 start()
             })
             
+        })
+    })
+}
+db.query('SELECTOR*FROM departments', (err, departments) => {
+    if(err) { console.log(err)}
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'removeDepartment',
+            message: 'Select which department you want to remove',
+            choice: department.map(departments => ({
+                name: `${departments.Name}`,
+                value: departments.id
+            })) 
+        }
+    ]).then(function(answer){
+        db.query(`DELETE FROM departments WHERE id = ${answer.removeDepartment}`,
+        function(err, res){
+            if (err) throw err
+            console.log('Department Removed')
+            start()
+        })
+    })
+})
+
+function removeRole(){
+    db.query('SELECT * FROM roles', (err, res) =>{
+        if (err) { console.log(err)}
+
+        inquirer.prompt([
+            {
+                type: 'list', 
+                name: 'removeRole',
+                message: 'Select which role you would like to remove:',
+                choices: roles.map(role => ({
+                    name: `${role.title}`,
+                    value: role.id
+                }))
+            }
+        ]).then(function(answer){
+            db.query(`DELETE / FROM roles WHERE id = ${answer.removeRole}`, 
+            function (err, res) {
+                if(err) throw err 
+                console.log('Role removed.')
+                start()
+            })
         })
     })
 }
