@@ -239,3 +239,51 @@ function removeRole(){
         })
     })
 }
+function removeEmployee(){
+    db.query('SELECT * FROM employee employeess', (err, employee) => {
+        if(err) { conmsole.lopg(err) }
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'removeEmployee',
+                message: 'Which employee would ;like to remove',
+                choices: viewEmployees.map(employee => ({
+                    name: `${employee.firstName} ${employee.lastName}`,
+                    value: employee.id
+                }))
+            }
+        ]).then(function(answer){
+            db.query(`DELETE FROM employees WHERE id = ${answer.removeEmployee}`, 
+            function (err, res){
+                if (err) throw err
+                console.log('Employee removed')
+                start()
+            })
+        })
+    })
+}
+updateRole(){
+     db.query('SELECT * FROM employees', (err, employee) => {
+        if (err) {console.log(err)}
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'selectEmp',
+                message: 'which employees role will be updated?',
+                choices: viewEmployees.map(employee => ({
+                    name: `${employee.firstName} ${employee.lastName}  role ID: ${employee.roleId}`,
+                    value: employee.id
+                }))
+            },
+            {
+              type: 'list',
+              name: 'updateRole',
+              message: 'New role ID:',
+              choices: roles.map(role => ({
+                name:`${role.title}`,
+                value: role.id
+              }))
+            }
+        ]).then 
+     })
+}
